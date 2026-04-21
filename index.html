@@ -157,6 +157,11 @@
   .example-preview.p3 .example-preview-art{color:var(--sage-800)}
   .example-preview.p4 .example-preview-art{color:var(--sage-700)}
   .example-preview::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(31,44,27,.08) 100%);pointer-events:none}
+  .example-preview.live-preview{background:#fbfaf6 !important}
+  .example-preview.live-preview iframe{position:absolute;top:0;left:0;width:1400px;height:2450px;border:0;transform-origin:top left;pointer-events:none;transition:transform .4s cubic-bezier(.22,.8,.24,1);background:#fbfaf6}
+  .example-preview.live-preview .live-preview-hover{position:absolute;bottom:14px;right:14px;background:rgba(26,24,20,.88);color:var(--paper);font-size:12px;font-weight:600;padding:8px 14px;border-radius:100px;letter-spacing:.02em;opacity:0;transform:translateY(6px);transition:all .25s;backdrop-filter:blur(6px);z-index:3}
+  .example.example-live:hover .live-preview iframe{transform-origin:top left;transform:var(--preview-scale,scale(.35))}
+  .example.example-live:hover .live-preview-hover{opacity:1;transform:translateY(0)}
   .example-badge{position:absolute;top:16px;right:16px;background:var(--sage-500);color:#fff;padding:7px 14px;border-radius:100px;font-size:11px;font-weight:600;letter-spacing:.08em;z-index:2;display:inline-flex;align-items:center;gap:6px;text-transform:uppercase}
   .example-body{padding:28px 28px 32px;flex:1;display:flex;flex-direction:column;gap:10px}
   .example-kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--sage-500);font-weight:600}
@@ -554,14 +559,10 @@
       </div>
 
       <a href="./templates/warm-welcome/" class="example example-live" style="text-decoration:none;color:inherit">
-        <div class="example-preview p2">
-          <span class="example-badge" style="background:#25d366">Ao vivo</span>
-          <svg class="example-preview-art" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-            <circle cx="100" cy="64" r="24" fill="currentColor" opacity=".15" stroke-width="2"/>
-            <path d="M100 50 Q92 56 92 64 Q92 72 100 76 Q108 72 108 64 Q108 56 100 50 Z" fill="currentColor" opacity=".45"/>
-            <path d="M76 64 Q76 48 100 48 M124 64 Q124 48 100 48" stroke-width="1.2" opacity=".5"/>
-            <path d="M60 110 L140 110" stroke-dasharray="2 4" opacity=".4"/>
-          </svg>
+        <div class="example-preview p2 live-preview" style="background:#fbfaf6">
+          <span class="example-badge" style="background:#25d366;z-index:3">Ao vivo</span>
+          <iframe src="./templates/warm-welcome/" title="Preview do template warm-welcome" loading="lazy" aria-hidden="true" tabindex="-1" scrolling="no"></iframe>
+          <span class="live-preview-hover">Ver em tamanho real →</span>
         </div>
         <div class="example-body">
           <div class="example-kicker">Exemplo 02 · Warm-welcome</div>
@@ -949,6 +950,24 @@
       window.scrollTo({ top: y, behavior: 'smooth' });
     });
   });
+})();
+
+// Live preview: scale iframe to fit card container
+(function(){
+  var previews = document.querySelectorAll('.example-preview.live-preview');
+  if (!previews.length) return;
+  function scaleAll(){
+    previews.forEach(function(el){
+      var iframe = el.querySelector('iframe');
+      if (!iframe) return;
+      var scale = el.clientWidth / 1400;
+      iframe.style.transform = 'scale(' + scale + ')';
+      el.style.setProperty('--preview-scale', 'scale(' + (scale * 1.02) + ')');
+    });
+  }
+  if (document.readyState === 'complete') scaleAll();
+  else window.addEventListener('load', scaleAll);
+  window.addEventListener('resize', scaleAll);
 })();
 </script>
 
